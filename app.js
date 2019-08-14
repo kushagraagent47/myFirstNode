@@ -1,16 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
-var http = require('http');
-var app = express();
-var mysql = require('mysql');
+var mongojs = require('mongojs');
+var db = mongojs('customerapp', ['users']);
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "nodedb"
-});
+var app = express();
 
 
 
@@ -32,9 +26,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/', function(req , res){
-    res.render('index', {
-        title: 'Customers'
-    })
+  db.users.find(function (err, docs) {
+    // docs is an array of all the documents in mycollection
+  
+  res.render('index', {
+    title: 'Customers',
+    users: docs
+    });
+  })
 });
 
 //Signup FORm
@@ -43,18 +42,6 @@ app.post('/users/add', function(req,res){
     var email = req.body.email;
     var pass = req.body.pass;
 
-con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
-    var sql = "INSERT INTO users (name, email) VALUES ?";
-    var values = [
-      [name, email],
-     ];
-    con.query(sql, [values], function (err, result) {
-      if (err) throw err;
-      console.log("Number of records inserted: " + result.affectedRows);
-    });
-  });
 });
 
 
