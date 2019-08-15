@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var mongojs = require('mongojs');
 var db = mongojs('customerapp', ['users']);
-
+var ObjectId = mongojs.ObjectID;
 var app = express();
 
 
@@ -38,13 +38,26 @@ app.get('/', function(req , res){
 
 //Signup FORm
 app.post('/users/add', function(req,res){
-    var name = req.body.name;
-    var email = req.body.email;
-    var pass = req.body.pass;
-
+  var newUser = {  
+  first_name: req.body.name,
+  email: req.body.email,
+  username: req.body.pass,
+  pass: req.body.pass,
+  }
+    db.users.insert(newUser, function(err ,result){
+      res.redirect('/');
+    })
 });
 
+app.delete('/users/delete/:id', function(req, res){
+  db.users.remove({_id: ObjectId(req.params.id)}, function(err ,result){
+    if(err){
+      console.log(err);
+    }
+    res.redirect('/');
+  });
+});
 
 app.listen(3000, function(){
-    console.log("started"); 
+    console.log("Server started"); 
 });
