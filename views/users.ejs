@@ -1,0 +1,23 @@
+<% include partials/header %>
+<table class="table">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>username</th>
+        <th>Email</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+    <% users.forEach(function(user){ %>
+      <tr class="success">
+        <td><%= user.first_name %></td>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+    <td><a href="#" class="delete" data-id="<%= user._id %>">Delete</a></td> 
+    </tr>
+      <% }) %>
+
+    </tbody>
+  </table>
